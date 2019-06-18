@@ -47,6 +47,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.DialogFragment;
@@ -70,12 +71,12 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
   private static final String TAG = "ColorPickerDialog";
 
   public static final int TYPE_CUSTOM = 0;
-  public static final int TYPE_PRESETS = 1;
+  static final int TYPE_PRESETS = 1;
 
   /**
    * Material design colors used as the default color presets
    */
-  public static final int[] MATERIAL_COLORS = {
+  static final int[] MATERIAL_COLORS = {
       0xFFF44336, // RED 500
       0xFFE91E63, // PINK 500
       0xFFFF2C93, // LIGHT PINK 500
@@ -112,26 +113,27 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
   private static final String ARG_PRESETS_BUTTON_TEXT = "presetsButtonText";
   private static final String ARG_CUSTOM_BUTTON_TEXT = "customButtonText";
   private static final String ARG_SELECTED_BUTTON_TEXT = "selectedButtonText";
+  private static final String ARG_DIALOG_STYLE = "dialogStyle";
 
-  ColorPickerDialogListener colorPickerDialogListener;
-  FrameLayout rootView;
-  int[] presets;
-  @ColorInt int color;
-  int dialogType;
-  int dialogId;
-  boolean showColorShades;
-  int colorShape;
+  private ColorPickerDialogListener colorPickerDialogListener;
+  private FrameLayout rootView;
+  private int[] presets;
+  @ColorInt private int color;
+  private int dialogType;
+  private int dialogId;
+  private boolean showColorShades;
+  private int colorShape;
 
   // -- PRESETS --------------------------
-  ColorPaletteAdapter adapter;
-  LinearLayout shadesLayout;
-  SeekBar transparencySeekBar;
-  TextView transparencyPercText;
+  private ColorPaletteAdapter adapter;
+  private LinearLayout shadesLayout;
+  private SeekBar transparencySeekBar;
+  private TextView transparencyPercText;
 
   // -- CUSTOM ---------------------------
-  ColorPickerView colorPicker;
-  ColorPanelView newColorPanel;
-  EditText hexEditText;
+  private ColorPickerView colorPicker;
+  private ColorPanelView newColorPanel;
+  private EditText hexEditText;
   boolean showAlphaSlider;
   private int presetsButtonStringRes;
   private boolean fromEditText;
@@ -184,7 +186,9 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
       selectedButtonStringRes = R.string.cpv_select;
     }
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity()).setView(rootView)
+    int styleResource = getArguments().getInt(ARG_DIALOG_STYLE);
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), styleResource).setView(rootView)
         .setPositiveButton(selectedButtonStringRes, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialog, int which) {
             onColorSelected(color);
@@ -272,7 +276,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
 
   // region Custom Picker
 
-  View createPickerView() {
+  private View createPickerView() {
     View contentView = View.inflate(getActivity(), R.layout.cpv_dialog_color_picker, null);
     colorPicker = (ColorPickerView) contentView.findViewById(R.id.cpv_color_picker_view);
     ColorPanelView oldColorPanel = (ColorPanelView) contentView.findViewById(R.id.cpv_color_panel_old);
@@ -425,7 +429,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
 
   // region Presets Picker
 
-  View createPresetsView() {
+  private View createPresetsView() {
     View contentView = View.inflate(getActivity(), R.layout.cpv_dialog_presets, null);
     shadesLayout = (LinearLayout) contentView.findViewById(R.id.shades_layout);
     transparencySeekBar = (SeekBar) contentView.findViewById(R.id.transparency_seekbar);
@@ -496,7 +500,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
     }
   }
 
-  void createColorShades(@ColorInt final int color) {
+  private void createColorShades(@ColorInt final int color) {
     final int[] colorShades = getColorShades(color);
 
     if (shadesLayout.getChildCount() != 0) {
@@ -733,7 +737,8 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
 
   // region Builder
 
-  @IntDef({ TYPE_CUSTOM, TYPE_PRESETS }) public @interface DialogType {
+  @IntDef({ TYPE_CUSTOM, TYPE_PRESETS })
+  @interface DialogType {
 
   }
 
@@ -753,6 +758,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
     boolean allowCustom = true;
     boolean showColorShades = true;
     @ColorShape int colorShape = ColorShape.CIRCLE;
+    @StyleRes int styleResource;
 
     /*package*/ Builder() {
 
@@ -902,6 +908,11 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
       return this;
     }
 
+    public Builder setDialogStyle(@StyleRes int styleResource) {
+      this.styleResource = styleResource;
+      return this;
+    }
+
     /**
      * Create the {@link ColorPickerDialog} instance.
      *
@@ -924,6 +935,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
       args.putInt(ARG_PRESETS_BUTTON_TEXT, presetsButtonText);
       args.putInt(ARG_CUSTOM_BUTTON_TEXT, customButtonText);
       args.putInt(ARG_SELECTED_BUTTON_TEXT, selectedButtonText);
+      args.putInt(ARG_DIALOG_STYLE, styleResource);
       dialog.setArguments(args);
       return dialog;
     }
