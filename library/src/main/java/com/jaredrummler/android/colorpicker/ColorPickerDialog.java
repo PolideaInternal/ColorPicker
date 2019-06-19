@@ -50,6 +50,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
@@ -177,14 +178,16 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
     }
     int styleResource = getArguments().getInt(ARG_DIALOG_STYLE);
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), styleResource);
+    Context wrappedContext = new ContextThemeWrapper(requireActivity(), styleResource);
 
-    rootView = new FrameLayout(builder.getContext());
+    AlertDialog.Builder builder = new AlertDialog.Builder(wrappedContext);
+
+    rootView = new FrameLayout(wrappedContext);
 
     if (dialogType == TYPE_CUSTOM) {
-      rootView.addView(createPickerView(builder.getContext()));
+      rootView.addView(createPickerView(wrappedContext));
     } else if (dialogType == TYPE_PRESETS) {
-      rootView.addView(createPresetsView(builder.getContext()));
+      rootView.addView(createPresetsView(wrappedContext));
     }
 
     int selectedButtonStringRes = getArguments().getInt(ARG_SELECTED_BUTTON_TEXT);
