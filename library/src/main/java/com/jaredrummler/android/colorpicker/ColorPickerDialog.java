@@ -173,8 +173,12 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
       color = savedInstanceState.getInt(ARG_COLOR);
       dialogType = savedInstanceState.getInt(ARG_TYPE);
     }
+    int styleResource = getArguments().getInt(ARG_DIALOG_STYLE);
 
-    rootView = new FrameLayout(requireActivity());
+    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), styleResource);
+
+    rootView = new FrameLayout(builder.getContext());
+    
     if (dialogType == TYPE_CUSTOM) {
       rootView.addView(createPickerView());
     } else if (dialogType == TYPE_PRESETS) {
@@ -186,9 +190,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
       selectedButtonStringRes = R.string.cpv_select;
     }
 
-    int styleResource = getArguments().getInt(ARG_DIALOG_STYLE);
-
-    AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), styleResource).setView(rootView)
+    builder.setView(rootView)
         .setPositiveButton(selectedButtonStringRes, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialog, int which) {
             onColorSelected(color);
