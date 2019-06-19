@@ -178,12 +178,12 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
 
     AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), styleResource);
 
-    rootView = new FrameLayout(new ContextThemeWrapper(requireActivity(), styleResource));
+    rootView = new FrameLayout(builder.getContext());
 
     if (dialogType == TYPE_CUSTOM) {
-      rootView.addView(createPickerView());
+      rootView.addView(createPickerView(builder.getContext()));
     } else if (dialogType == TYPE_PRESETS) {
-      rootView.addView(createPresetsView());
+      rootView.addView(createPresetsView(builder.getContext()));
     }
 
     int selectedButtonStringRes = getArguments().getInt(ARG_SELECTED_BUTTON_TEXT);
@@ -279,13 +279,13 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
 
   // region Custom Picker
 
-  private View createPickerView() {
-    View contentView = View.inflate(getActivity(), R.layout.cpv_dialog_color_picker, null);
-    colorPicker = (ColorPickerView) contentView.findViewById(R.id.cpv_color_picker_view);
-    ColorPanelView oldColorPanel = (ColorPanelView) contentView.findViewById(R.id.cpv_color_panel_old);
-    newColorPanel = (ColorPanelView) contentView.findViewById(R.id.cpv_color_panel_new);
-    ImageView arrowRight = (ImageView) contentView.findViewById(R.id.cpv_arrow_right);
-    hexEditText = (EditText) contentView.findViewById(R.id.cpv_hex);
+  private View createPickerView(Context context) {
+    View contentView = View.inflate(context, R.layout.cpv_dialog_color_picker, null);
+    colorPicker = contentView.findViewById(R.id.cpv_color_picker_view);
+    ColorPanelView oldColorPanel = contentView.findViewById(R.id.cpv_color_panel_old);
+    newColorPanel = contentView.findViewById(R.id.cpv_color_panel_new);
+    ImageView arrowRight = contentView.findViewById(R.id.cpv_arrow_right);
+    hexEditText = contentView.findViewById(R.id.cpv_hex);
 
     try {
       final TypedValue value = new TypedValue();
@@ -432,12 +432,12 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
 
   // region Presets Picker
 
-  private View createPresetsView() {
-    View contentView = View.inflate(getActivity(), R.layout.cpv_dialog_presets, null);
-    shadesLayout = (LinearLayout) contentView.findViewById(R.id.shades_layout);
-    transparencySeekBar = (SeekBar) contentView.findViewById(R.id.transparency_seekbar);
-    transparencyPercText = (TextView) contentView.findViewById(R.id.transparency_text);
-    GridView gridView = (GridView) contentView.findViewById(R.id.gridView);
+  private View createPresetsView(Context context) {
+    View contentView = View.inflate(context, R.layout.cpv_dialog_presets, null);
+    shadesLayout = contentView.findViewById(R.id.shades_layout);
+    transparencySeekBar = contentView.findViewById(R.id.transparency_seekbar);
+    transparencyPercText = contentView.findViewById(R.id.transparency_text);
+    GridView gridView = contentView.findViewById(R.id.gridView);
 
     loadPresets();
 
