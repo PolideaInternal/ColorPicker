@@ -29,7 +29,6 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -44,6 +43,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -53,6 +53,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
+
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -224,7 +225,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
 
   @Override public void onStart() {
     super.onStart();
-    AlertDialog dialog = (AlertDialog) getDialog();
+    final AlertDialog dialog = (AlertDialog) getDialog();
 
     // http://stackoverflow.com/a/16972670/1048340
     //noinspection ConstantConditions
@@ -242,12 +243,12 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
             case TYPE_CUSTOM:
               dialogType = TYPE_PRESETS;
               ((Button) v).setText(customButtonStringRes != 0 ? customButtonStringRes : R.string.cpv_custom);
-              rootView.addView(createPresetsView());
+              rootView.addView(createPresetsView(dialog.getContext()));
               break;
             case TYPE_PRESETS:
               dialogType = TYPE_CUSTOM;
               ((Button) v).setText(presetsButtonStringRes != 0 ? presetsButtonStringRes : R.string.cpv_presets);
-              rootView.addView(createPickerView());
+              rootView.addView(createPickerView(dialog.getContext()));
           }
         }
       });
