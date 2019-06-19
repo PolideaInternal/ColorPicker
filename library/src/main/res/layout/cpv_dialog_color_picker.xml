@@ -86,9 +86,8 @@
             android:focusable="true"
             android:imeOptions="actionGo"
             android:inputType="textNoSuggestions"
-            android:maxLines="1"
-            android:ellipsize="end"
             android:maxLength="8"
+            android:singleLine="true"
             android:typeface="monospace"
             />
 
