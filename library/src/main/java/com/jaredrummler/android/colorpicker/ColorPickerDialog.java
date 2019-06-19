@@ -29,6 +29,7 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -177,8 +178,8 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerView
 
     AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), styleResource);
 
-    rootView = new FrameLayout(builder.getContext());
-    
+    rootView = new FrameLayout(new ContextThemeWrapper(requireActivity(), styleResource));
+
     if (dialogType == TYPE_CUSTOM) {
       rootView.addView(createPickerView());
     } else if (dialogType == TYPE_PRESETS) {
